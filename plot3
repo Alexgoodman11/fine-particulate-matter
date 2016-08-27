@@ -1,0 +1,34 @@
+#Fine particulate
+
+##declare packages,set folder
+library(dplyr)
+library(ggplot2)
+
+setwd("C:/Users/Alexandre/Desktop/R_directory")
+
+
+## Download and unzip the dataset:
+datapart <- "data.zip"
+if (!file.exists(datapart)){
+  fileURL <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip"
+  download.file(fileURL, datapart)
+  unzip(datapart)
+}  
+
+##read data
+NEIr<- "summarySCC_PM25.rds"
+SCCr<-"Source_Classification_Code.rds"
+NEI <- readRDS(NEIr)
+SCC <- readRDS(SCCr)
+
+
+#graph3
+empyearm<-NEI%>%
+  filter(fips=="24510")
+png("plot3.png", width = 480, height = 480)
+g <- ggplot(empyearm,aes(x=year,y=Emissions,color=type))
+g +  stat_summary(fun.y="sum", geom="line") +
+  ylab("PM2.5 emissions")+
+  ggtitle("Emissions in Baltimore City from 1999 to 2008")+
+  theme_bw()
+dev.off()
