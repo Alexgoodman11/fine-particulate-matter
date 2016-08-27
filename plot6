@@ -1,0 +1,36 @@
+#Fine particulate
+
+##declare packages,set folder
+library(dplyr)
+library(ggplot2)
+
+setwd("C:/Users/Alexandre/Desktop/R_directory")
+
+
+## Download and unzip the dataset:
+datapart <- "data.zip"
+if (!file.exists(datapart)){
+  fileURL <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip"
+  download.file(fileURL, datapart)
+  unzip(datapart)
+}  
+
+##read data
+NEIr<- "summarySCC_PM25.rds"
+SCCr<-"Source_Classification_Code.rds"
+NEI <- readRDS(NEIr)
+SCC <- readRDS(SCCr)
+
+#graph6
+empyearm1<-NEI%>%
+  filter(fips=="24510" & type =="ON-ROAD")
+empyearm2<-NEI%>%
+  filter(fips=="06037" & type =="ON-ROAD")
+DF<-rbind(empyearm1,empyearm2)
+
+png("plot6.png",480, height = 480)
+g <- ggplot(DF,aes(x=year , y=Emissions,color=fips ))
+g +  stat_summary(fun.y="sum", geom="line") +
+  ylab("PM2.5 emissions")+
+  ggtitle("comparison of motor vehicule emissions between Baltimore and LA from 1999 to 2008")
+dev.off()
